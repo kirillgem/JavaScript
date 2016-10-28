@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>ToDo List</title>
+				<!-- Prohibits caching HTML -->
+			<meta http-equiv="cache-control" content="no-cache">
+			<meta http-equiv="expires" content="0">
+			<meta http-equiv="pragma" content="no-cache">
+			<link rel="shortcut icon" href="content/icon_baner.ico" type="image/ico">
+			<link type="image/x-icon" href="content/icon_baner.ico" rel="icon">
+			<link type="image/x-icon" href="content/icon_baner.ico" rel="shortcut icon">
+			<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+			<style type="text/css" >
+				html {
+					background-color: rgba(70, 130, 180, 0.1);
+					overflow-y:scroll;
+				}
+				.no_script {
+					display:inline-block;
+					width:100%;
+					text-align:center;
+					background:#FFFFFF;
+					position:absolute;
+					z-index:500;
+					height: 150px;
+				}
+				.no_script a {
+					display:inline-block;
+					font-size:20px;
+					color:#FF8C00;
+					margin:50px 0 0 0;
+				}
+				.no_script a:after{ 
+					content:"Please enable JavaScript in your browser settings"; 
+				}
+				.work_space {
+					display:table;
+					text-align:center;
+					vertical-align: middle;
+					width:100%;
+					height:100%;
+					padding: 50px 0 70px 0;
+					font-family: Roboto,Helvetica,Arial,Tahoma,sans-serif;
+				}
+				.work_desk {
+					display:table-row;
+					text-align:center;
+				}
+				
+				.table_task_manager{
+					display:block;
+					max-width:600px;
+					min-height:35px;
+					vertical-align: top;
+					background-color: #fff;
+					display:inline-block;
+					text-align:left;
+					height:auto;
+					border-left: #C0C0C0 thin solid;
+					border-top: #C0C0C0 thin solid;
+					border-right: #C0C0C0 thin solid;
+					width:100%;
+					position:relative;
+				}
+				.table_task_manager table {
+					width:100%;
+					border-spacing:0;
+					border-collapse:collapse;
+					position:relative;
+				}
+				.table_task_manager table tr {
+					border-bottom: #C0C0C0 thin solid;
+				}
+				.table_task_manager table tr:nth-child(1) {
+					border-bottom: #696969 thin solid;
+				}
+				.table_task_manager table tr:nth-child(1) td {
+					border: none;
+				}
+				.table_task_manager table td {
+					vertical-align: top;
+				}
+				.table_task_manager table td:nth-child(1)  {
+					width:30px;
+				}
+				.table_task_manager table td:nth-child(2)  {
+					width:200px;
+					font-size:14px;
+					color:#696969;
+					padding: 10px 0 0 28px;
+					border-left: #C0C0C0 thin solid;
+				}
+				.table_task_manager table td:nth-child(3n)  {
+					padding: 10px 0 0 28px;
+					min-height:30px;
+					font-size:14px;
+					color:#696969;
+					border-left: #C0C0C0 thin solid;
+				}
+			/*	.table_task_manager table th {
+					height:37px;
+				}*/
+				.table_task_manager input, .table_task_manager a  {
+					display:inline-block;
+				}
+				.table_task_manager input {
+					display:block;
+					width:30px;
+					height:30px;
+					/*-moz-appearance: none;
+					-webkit-appearance: none;
+					-o-appearance: none;*/
+					border-top-color: transparent;
+					border-left-color: transparent;
+					cursor: pointer;
+					box-sizing: border-box;
+					-webkit-transition: all .12s, border-color .08s;
+					transition: all .12s, border-color .08s; 
+				}  
+				.table_task_manager a {
+					padding: 5px 0 0 5%;
+					width:100%;
+					min-height:30px;
+					font-size:14px;
+					text-decoration:none;
+					color:#696969;
+				} 
+					/*
+						Selection options
+					*/
+				.ul_task_menu{
+					display:inline-block;
+					position:absolute;
+					padding:0;
+					margin:0;
+					list-style:none;
+					top:0;
+					left:40px;
+					/*background-color: rgba(70, 130, 180, 0.5);*/
+					cursor:pointer;
+					
+					/*-webkit-transition: all 1200ms cubic-bezier(0.280, -0.315, 0.685, 1.390);
+					-moz-transition: all 1200ms cubic-bezier(0.280, -0.315, 0.685, 1.390);
+					-o-transition: all 1200ms cubic-bezier(0.280, -0.315, 0.685, 1.390);
+					transition: all 1200ms cubic-bezier(0.280, -0.315, 0.685, 1.390);*/
+					
+				}
+				.ul_task_menu li:nth-child(1){
+					width:40px;
+					height:38px;
+					font-size:32px;
+					text-align:center;
+					font-family: "icon_font";
+				}
+				.ul_task_button {
+					display:none;
+					padding:0;
+					margin:0;
+					list-style:none;
+					background-color: rgba(250, 250, 250, 0.85);
+					font-size: 15px; font-family:Constantia,Sans-serif;
+					/*color:#fff; */
+				}
+				.ul_task_button li:nth-child(1) {
+					width: 150px;					
+					height:30px;
+					font-size:14px;
+					text-align:left;
+					
+					background-position: 0 0;
+					background-repeat: repeat-x;
+					background-size: 5px 100%;
+				}
+				.ul_task_button li {
+					font-size:14px;
+					width: 150px;					
+					height:30px;
+					padding:10px 0 0 10px;
+					
+					background-position: 0 0;
+					background-repeat: repeat-x;
+					background-size: 5px 100%;
+				}
+				.ul_task_button li:hover{
+					/*background: #E9967A; 30, 144, 255 */
+					background-color: rgba(70, 130, 180, 0.8);
+					
+					background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAbCAYAAAC0s0UOAAAATklEQVR42rTRuQ3AQAhE0bXkUtx/ddwEOPcQIHmX8Ekk86+qetbn7sxcgBGBaGaI7o6oqkMUEURm3o5ENMQT7z+xXWk+ctuordl1fwUYAP9tTp3a/m0xAAAAAElFTkSuQmCC");
+					color:#fff;
+				}
+				.ul_task_menu:hover li ul{
+					display:inline-block;
+				}
+				.ul_task_menu :hover {
+					/*color:#fff;*/
+					/*background-color: rgba(70, 130, 180, 0.1);*/
+				}
+				.table_task_manager_head_button {
+					display:table;
+					width: 145px;
+					text-align:right;
+					position:absolute;
+					top:0;
+					right:0;
+				}
+				.table_task_manager_head_button span {
+					display:table-cell;
+					width:50%;
+					height:50%;
+					font-size:28px;
+					color:#A9A9A9;
+					/*font-family: "icon_font";*/
+					cursor:pointer;
+					text-align:center;
+					
+					background-position: 0 0;
+					background-repeat: repeat-x;
+					background-size: 5px 100%;
+					
+				}
+				.table_task_manager_head_button span:hover {
+					background-color: rgba(70, 130, 180, 0.8);
+					background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAbCAYAAAC0s0UOAAAATklEQVR42rTRuQ3AQAhE0bXkUtx/ddwEOPcQIHmX8Ekk86+qetbn7sxcgBGBaGaI7o6oqkMUEURm3o5ENMQT7z+xXWk+ctuordl1fwUYAP9tTp3a/m0xAAAAAElFTkSuQmCC");
+					color:#fff;
+				}
+				
+				.page_edition_cell {
+					position:absolute;
+					outline: none;
+					
+					-moz-appearance: none;
+					
+					resize: none; 
+					border: #696969 thin solid;
+					font-size: 15px; font-family:Constantia,Sans-serif;
+					text-align: center;
+					
+					-webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 5px rgba(0, 0, 0, 0.1) inset;
+					-moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 5px rgba(0, 0, 0, 0.1) inset;
+					box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 5px rgba(0, 0, 0, 0.1) inset;
+					
+				}
+					/*
+						Маркер для закраски строк
+					*/
+				.row_makers {
+					position:absolute;
+					top:0;
+					left:0;
+					cursor:pointer;
+				}
+				.row_makers_menu {
+					display:inline-block;
+					padding:0;
+					margin:0;
+					list-style:none;
+				}
+				.row_makers_menu li{
+					width:35px;
+					height:35px;
+					font-size: 26px;
+				}
+				
+			</style>
+			<script type="text/javascript" >
+			
+				/*
+					set event listener
+				*/
+			function addevlist(o,m,f){
+				var ie = "on" + m;
+				if(o.addEventListener){ 	// stsndart browsers
+					o.addEventListener(m, f, false);
+				}else if(o.attachEvent){ 	//For Internet Explorer
+					o.attachEvent(ie, f);
+				}else{ 						//For other browsers
+					o.onmouseover = f;
+				}
+			}
+						
+				/*
+					remove event listener
+				*/
+			function removelist(o,m,f){
+				var ie = "on" + m;
+				if(o.removeEventListener){ 	// stsndart browsers
+					o.removeEventListener(m, f, false);
+				}else if(o.detachEvent){ 	//For Internet Explorer
+					o.detachEvent(ie, f);
+				}else{ 						//For other browsers
+					o.onmouseover = f;
+				}
+				return true;
+			}
+			
+			
+					/*
+						ToDo List class
+					*/
+					/*
+						Get Element by ID
+					*/
+				function id(s){
+					var ob = {};
+					if	( (ob = document.getElementById(s)) != null ){
+						return ob;
+					}
+					return false;
+				}
+					/*
+						Class for tables
+					*/
+				function taskManager(){
+					this.wBook 		= {};		// workbook (div)
+					this.wSheets 	= {};		// worksheets in workbook ( collection of the tables )
+					this.wSheet		= {};		// one of the sheets of the current book ( current table )
+					this.range		= {};		// the current row ( tr in the table )
+					this.editor 	= {};		// frame for keyboard input ( id = page_edition_cell / textarea)
+					this.wbCellEdit = false;	// если были изменения текста то = true;
+					this.sheetCell	= {};		// ?
+					this.markTools	= {};		// панель с инструментами для маркировки
+					this.markState	= false;	// состояние панели открепить/убарать
+						/*
+							Get workbook
+						*/
+					this.selectWBook = function (){
+						this.wBook = {};
+						this.wBook = id("work_book");
+						
+						if	( typeof this.wBook == "object" ){ 
+									this.editor = {};
+									this.editor = document.createElement("TEXTAREA");
+									this.wBook.appendChild(this.editor);
+									this.editor.className = "page_edition_cell";
+									this.editor.setAttribute("wrap", "hard");
+									this.editor.setAttribute("maxlength", "300");
+									this.editor.style.display = "none";
+									addevlist(this.editor, "blur", closeEditor);
+									addevlist(this.editor, "change", cellOnEdit);
+									addevlist(this.editor, "input", cellInputData);
+								/*
+									marker tools
+								*/
+							this.markTools = document.createElement("div");
+							this.markTools.className = "row_makers";
+							this.markTools.style.display = "none";
+							var ul = {}, li = {}; 
+							ul = document.createElement("ul");
+							ul.className = "row_makers_menu";
+							this.markTools.appendChild(ul);
+							li = document.createElement("li");
+							li.innerHTML = "&#9998;";
+							ul.appendChild(li);
+							this.wBook.appendChild(this.markTools);	
+							//addevlist( document.body, "click", hidMark);
+							return true; 
+						}
+						return false;
+					};
+					
+						/*
+							Get worksheets in workbook
+						*/
+					this.selectWSheets = function (){
+						if	( this.selectWBook() ){
+							this.wSheets = {};
+							this.wSheets = this.wBook.getElementsByTagName("table");
+													
+							if	( typeof this.wSheets == "object" ){ return true; }
+						}
+						return false;
+					};
+						/*
+							Select worksheet  N
+						*/
+					this.selectWSheet = function (n){
+						if	( this.selectWSheets() ){
+							if	( typeof this.wSheets[n] == "object" ){
+								this.wSheet = {};
+								this.wSheet = this.wSheets[n];
+								if	( typeof this.wSheet == "object" ){ return true; }
+							}
+						}
+						return false;
+					};
+					
+						/*
+							Install new / re-install event listeners
+						*/
+					this.insWSheet = function (){ 
+						var rw = {};
+						rw = wbTool.wSheet.rows;
+						if	( typeof rw == "object" ){
+							var wCells = {};
+							for( i in rw){
+								if	( this.jk(rw,i) && rw[i].rowIndex != 0 ){
+										wCells = {};
+										wCells = rw[i].cells; 
+									for( n in wCells){
+										if	( this.jk(wCells,n) && wCells[n].cellIndex != 0 ){ 
+											if	( removelist( wCells[n], "click", cClick ) ){}
+											if	( addevlist( wCells[n], "click", cClick ) ){}
+										}
+									}
+								}
+							}
+						}
+					};
+					
+						/*
+							Standart hadler on checkBox
+						*/
+					this.chekInstal = function(){
+						var b = [];
+						if	( b = this.rowCheckBox() ){
+							for( i in b ){
+								if	( typeof i != NaN && i == 0 && typeof b[i] == "object" ){
+									if	( removelist( b[i], "click", changeBox ) ){}
+									if	( addevlist( b[i], "click", changeBox ) ){}
+								}
+							}
+							return true;
+						}
+						return false;
+					}
+					
+					this.markToolShow = function(ob){ 	
+						this.range = ob;
+						if	( this.markTools.style.display == "none" ){
+							if	( this.editor.style.display = "none"  ){
+								this.markToolXy();
+							}
+						}
+					}
+					
+					this.markToolHidden = function(){
+						if	( this.markTools.style.display == "inline-block" ){
+							this.markTools.style.display = "none";
+						}
+					}
+						/*
+							move cursor xy ( mouseover )
+						*/
+					this.markToolXy = function (){
+						if	(this.markState){
+							var x = this.findPosX(this.range);
+							var y = this.findPosY(this.range);
+								x -= this.findPosX(this.wSheet) + 1;
+								y -= this.findPosY(this.wSheet) + 1;
+							this.markTools.style.left = (  (x + this.range.offsetWidth) - 34 )+"px";
+							this.markTools.style.top = y+"px";
+							this.markTools.style.display = "inline-block";
+						}
+					}
+						// move cursor xy
+					this.selectCellforEdit = function(){
+							var x = this.findPosX(this.range);
+							var y = this.findPosY(this.range);
+								x -= this.findPosX(this.wSheet) + 1;
+								y -= this.findPosY(this.wSheet) + 2;
+							this.editor.style.left = x+"px";
+							this.editor.style.top = y+"px";
+							this.editor.style.width = (this.range.offsetWidth - 2)+"px";
+							this.editor.style.height = (this.range.offsetHeight - 1)+"px";
+							this.editor.style.display = "inline-block";
+							this.editor.value = this.clerInput(this.range.innerHTML);
+							this.editor.focus();
+					};
+					
+					this.cellClick = function(ob){
+						this.range = ob;
+						this.selectCellforEdit();
+						
+					};
+					
+						/*
+							Coordinates table field
+						*/
+					this.findPosX = function (obj) {
+						var curleft = 0;
+						if (obj.offsetParent) {
+							while (1) {
+								curleft += obj.offsetLeft;
+								if (!obj.offsetParent) {
+									break;
+								}
+								obj=obj.offsetParent;
+							}
+						} else if (obj.x) {
+							curleft+=obj.x;
+						}
+						curleft -= document.body.scrollLeft;
+						
+						return curleft;
+					};
+					 
+					this.findPosY = function (obj) {
+						var curtop = 0;
+						if (obj.offsetParent) {
+							while (1) {
+								curtop+=obj.offsetTop;
+								if (!obj.offsetParent) {
+									break;
+								}
+								obj=obj.offsetParent;
+							}
+						} else if (obj.y) {
+							curtop+=obj.y;
+						}
+						curtop -= document.body.scrollTop;
+						
+						return curtop;
+					};
+						/*
+							Close the editor and save the line
+						*/
+					this.cellEndEdit = function(){
+						var df = "";
+							// если было редактирование то вернем текст
+						if	(this.wbCellEdit){
+							this.range.innerHTML = this.clerInput(this.editor.value);
+								// пересчитать и праверить формулы
+							//this.cellExpression();
+							this.wbCellEdit = false;
+						}
+						this.editor.value = "";
+						this.editor.style.display = "none";
+						
+					};			
+						// фиксируем факт изменения текста
+					this.cellIsOnChange = function(){
+						this.wbCellEdit = true;
+					};		
+						// принимает вводимые данные из поля textarea и согласно установкам поля обрабатывает ввод и возращает в textarea
+					this.cellInputFilterFormat = function(){
+						if	(typeof this.range == "object"){
+							this.cellIsOnChange();
+						}else{
+							this.editor.style.display = "none";
+							return "";
+						}
+					};
+						/*
+							Clear input
+						*/
+					this.clerInput = function(s){
+						return s.replace(/<[^>]+>/g,'');
+					};
+					this.SheetAddRow = function(sh){
+						var i = 0;
+						i = this.wSheet.rows.length-1;
+						
+							// limit 50
+						if (i <= 50){
+							var wPoolCountCell = this.wSheet.rows[i].cells.length;
+							var nTR = document.createElement("TR");
+								this.wSheet.tBodies[0].appendChild(nTR);
+							i++;
+							var nTD = {};
+							for(t = 0; t < wPoolCountCell; ){
+								nTD = document.createElement("TD");
+								this.wSheet.rows[i].appendChild(nTD);
+								if	(t == 0){
+									var nCb = document.createElement("input");
+										nCb.setAttribute("type", "checkbox");
+										nCb.setAttribute("name", "row_checkbox");
+										nTD.appendChild(nCb);
+								}else{	
+									addevlist(nTD, "click", cClick);
+								}
+								t++;
+							}
+						}else{	
+							alert("Limit 50 lines");
+						}
+					};
+					
+						/*
+							Get all checkbox in this table
+							return array with checkbox ( only "row_checkbox" group name)
+						*/
+					this.rowCheckBox = function (){
+						var cBox 	= {};
+						var collect = [];
+						cBox = this.wSheet.getElementsByTagName("input");
+						if	( typeof cBox == "object" ){
+							for( i in cBox ){
+								if	( this.jk(cBox,i) && cBox[i].name == "row_checkbox"){
+									collect.push(cBox[i]);
+								}
+							}
+							return collect;
+						}
+						return false;
+					};
+						/*
+							defined as in the first element
+						*/
+					this.checkFirst = function (){
+						var b = [];
+						var f = false;
+						if	( b = this.rowCheckBox() ){
+							f = b[0].checked;
+							for( x in b){
+								if	( this.jk(b,x) ){
+									b[x].checked = f;
+								}
+							}
+							return true;
+						}
+						return false;
+						
+					};
+					
+						/*
+							Remove rows from worksheet
+						*/
+					this.rowsRemove = function(){
+						if	( this.wSheet.rows.length > 1 ){
+							var b = [], fd = [];
+							if	( b = this.rowCheckBox() ){
+								f = b[0].checked;
+								for( x in b){
+									if	( this.jk(b,x) ){
+										if	( x > 0 && b[x].checked ){
+											fd.push( this.wSheet.rows[b[x].parentNode.parentNode.rowIndex] );
+										}
+									}
+								}
+								if	( fd.length > 0 ){
+									for(var d = fd.length-1; d >= 0;){
+										if	(typeof fd[d] == "object" && fd[d].parentNode != null){
+											fd[d].parentNode.removeChild(fd[d]);
+										}
+										d--;
+									}
+								}else{
+									alert( "select row, please" ); 
+								}
+								return true;
+							}
+						}
+						return false;
+						
+					};
+					
+						/*
+							Mark rows as finished
+						*/
+					this.rowsMark = function(){
+						if	( this.wSheet.rows.length > 1 ){
+							var b = [], fd = [];
+							if	( b = this.rowCheckBox() ){
+								f = b[0].checked;
+								for( x in b){
+									if	( this.jk(b,x) ){
+										if	( x > 0 && b[x].checked ){
+												// удалим родительский элемент
+											//alertObj(this.wSheet.rows);
+											//this.wSheet.parentNode.removeChild(this.wSheet.rows[x]);
+											fd.push( this.wSheet.rows[b[x].parentNode.parentNode.rowIndex] );
+										}
+									}
+								}
+								if	( fd.length > 0 ){
+									for(var d = fd.length-1; d >= 0;){
+										if	(typeof fd[d] == "object" && fd[d].parentNode != null){
+											if	( fd[d].style.backgroundColor == "rgba(0, 255, 0, 0.4)" ){
+												fd[d].style.backgroundColor = "#fff";
+											}else{
+												fd[d].style.backgroundColor = "rgba(0, 255, 0, 0.4)";
+											}
+										}
+										d--;
+									}
+								}else{
+									alert( "select row, please" ); 
+								}
+								//alertObj(fd[]);
+								return true;
+							}
+						}
+						return false;
+						
+					};
+						
+						/*
+							Заменить элементы таблицы
+							r - rows objects
+							a - array sorted
+						*/
+					this.wSheetRowsReplace = function(r, a){
+						var m = {}; //console.dir(a);
+						for( i in r ){
+							if( this.jk(r,i) && i > 0 ){
+								m = {}; m = r[i].cells;
+								for( l in m ){
+									if( this.jk(m,l) && l > 0 ){ 
+										//replaceChild(myDiv, myPar);
+										this.wSheet.rows[i].cells[l].innerHTML = a[i-1][l-1];
+									}
+								}
+							}
+						}
+					};
+						
+					this.wbRowsSort = function(){
+						var asort = {};
+						asort = this.makeAr(this.wSheet.rows);
+						asort.sort(this.mSort(0));
+						this.wSheetRowsReplace(this.wSheet.rows, asort);
+					};
+						
+					this.wbReversSortRow = function(){
+						var asort = [];
+						asort = this.makeAr(this.wSheet.rows);
+						asort.sort(this.mSort(0));
+						asort.reverse(this.mSort(0));
+						this.wSheetRowsReplace(this.wSheet.rows, asort);
+					};
+					
+					this.makeAr = function(m){
+						var a = [], l = [], col = [];
+						for( i in m ){	
+							if( this.jk(m,i) && i > 0 ){
+								l = []; 
+								l = m[i].cells; //alertObj(l);
+								a = [];
+								for( s in l ){ //alertObj(l[s]);
+									if( this.jk(l,s) && s > 0 ){
+										a.push( l[s].innerHTML );
+									}
+								}
+								col.push(a);
+							}
+						}
+						return col;
+					};
+						/*
+							check and get an object
+						*/
+					this.jk = function (b,i){ 
+						if	( typeof i != NaN && typeof b[i] == "object" ){ return b; }
+						return false;
+					};
+					
+					this.mSort = function (i) { // функция для сортировки в прямом порядке (по возрастанию)
+						return function (a, b) {
+						return a[i] > b[i];
+						}
+					};
+				}
+				
+					/*
+						Set the pointer to the first worksheet
+					*/
+				var wbTool = {};
+				function taskSet(){
+					wbTool = new taskManager();
+					if	( typeof wbTool == "object" ){
+						console.info("%s Ready for work! Sheet ","Hello!",0);
+						if	( wbTool.selectWSheet(0) ){
+							//console.dir(wbTool.wSheet.rows);
+							wbTool.insWSheet();
+							wbTool.chekInstal();
+							return true;
+						}	
+					}
+					console.error("Sorry, Workbook is not selected!");
+				}
+				
+					/*
+						Click on the field of the table
+					*/
+				function cClick(){
+					wbTool.cellClick(this);	
+				}
+					
+					/*
+						Close editor
+					*/
+				function closeEditor(){
+					if	(typeof wbTool == "object" && wbTool.editor != "undefined"){
+						wbTool.cellEndEdit();
+					}
+				}
+					/* 
+						fix fact editing
+					*/
+				function cellOnEdit(){
+					if	(typeof wbTool == "object" && wbTool.editor != "undefined"){
+						wbTool.cellIsOnChange();
+					}
+				}
+					/* 
+						Write the string in the table
+					*/
+				function cellInputData(){
+					if	(typeof wbTool == "object" && wbTool.editor != "undefined"){
+						wbTool.cellInputFilterFormat();
+					}
+				}
+					/*
+						Run - Sort by name
+					*/
+				function sortRows(){
+					wbTool.wbRowsSort();
+					//alertObj(etag);
+					//console.dir(etag);
+					//etag.innerHTML = "&#9650;";
+				}
+				function reverSortRow(){
+					wbTool.wbReversSortRow();
+				}
+					/*
+						Run - added by a new row to the table
+					*/
+				function addRow(){
+					//alert("add row");
+					wbTool.SheetAddRow();
+				}
+				
+					/*
+						Run - remove the row 
+					*/
+				function removeRow(){
+					wbTool.rowsRemove();
+				}
+					/*
+						Run save as
+					*/
+				function saveAs(){
+					alert("save row as");
+				}
+					/*
+						Run set new list
+					*/
+				function newList(){
+					document.location.href = document.location.href;
+				}
+					/*
+						CheckBox event
+					*/
+				function changeBox(){
+					wbTool.checkFirst();
+					
+					/*
+						проверим на каком элементе был клик 
+						если это первый элемент то запустим 
+						команду выровнять все как в первом
+					*/
+					//var e = window.event;
+					//e.currentTarget;
+					//alert( typeof this );
+					/*if	( this.tabIndex == 0 ){
+						wbTool.checkFirst(this.checked);
+					}*/
+					//console.dir(etag);
+					//alertObj(ch.);
+				}
+					/*
+						событие mouseover для полей таблицы TD
+					*/
+				function evmo(){
+					wbTool.markToolShow(this);
+				}
+					/*
+						Закрыть панель иструментов с палитрой
+					*/
+				function hidMark(){
+					wbTool.markToolHidden();
+				}
+					/*
+						Mark selection rows
+					*/
+				function msr(){
+					wbTool.rowsMark();
+				}
+					/*
+						Button down listener - enter
+					*/
+				document.onkeyup = function(e){
+					e = e || window.event;
+					if (e.keyCode === 13) {
+						/*
+							Interception events
+						*/
+						closeEditor();
+					}
+					// Отменяем действие браузера
+					return false;
+				}
+					/*
+						event - user close page
+					*/
+		/*		window.onbeforeunload = confirmClose;
+					function confirmClose(){
+						return false;
+					} */
+					
+				
+			</script>
+		</head>
+		<body>
+			<noscript><div class="no_script" ><a href="http://www.enable-javascript.com/"></a></div></noscript>
+			<div class="work_space" >
+				<div class="work_desk" >
+					<h1>ToDo List</h1>
+					<div id="work_book" class="table_task_manager" >
+						<table>
+							<tr>
+								<td>
+									<input type="checkbox" name="row_checkbox" />
+								</td>
+								<td>
+									<ul class="ul_task_menu" >
+										<li>&equiv;</li>
+										<li>
+											<ul class="ul_task_button" >
+												<li onclick="removeRow();" >
+													remove from list
+												</li>
+												<li onclick="saveAs();" >
+													save as
+												</li>
+												<li onclick="newList();" >
+													new list
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</td>
+								<td>
+									<div class="table_task_manager_head_button" >
+										<span onclick="msr();" >&#9998;</span>
+										<span onclick="addRow();" >&#43;</span>
+										<span onclick="sortRows();" >&#9660;</span>
+										<span onclick="reverSortRow();" >&#9650;</span>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript" >			
+				document.onload = taskSet();
+			</script>
+		</body>
+</html>
